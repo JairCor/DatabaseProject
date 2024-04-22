@@ -144,12 +144,12 @@ CREATE TABLE IF NOT EXISTS `projectdb`.`song` (
   `GENRE_ID` VARCHAR(7) NOT NULL,
   `LYRICS_ID` VARCHAR(15) NOT NULL,
   `MOOD_ID` VARCHAR(7) NOT NULL,
-  `topic_TOPIC_ID` VARCHAR(7) NOT NULL,
-  PRIMARY KEY (`SONG_ID`, `ARTIST_ID`, `topic_TOPIC_ID`),
+  `TOPIC_ID` VARCHAR(7) NOT NULL,
+  PRIMARY KEY (`SONG_ID`, `ARTIST_ID`, `TOPIC_ID`),
   INDEX `fk_song_genre1_idx` (`GENRE_ID` ASC) VISIBLE,
   INDEX `fk_song_lyrics1_idx` (`LYRICS_ID` ASC) VISIBLE,
   INDEX `fk_song_mood1_idx` (`MOOD_ID` ASC) VISIBLE,
-  INDEX `fk_song_topic1_idx` (`topic_TOPIC_ID` ASC) VISIBLE,
+  INDEX `fk_song_topic1_idx` (`TOPIC_ID` ASC) VISIBLE,
   CONSTRAINT `fk_song_genre1`
     FOREIGN KEY (`GENRE_ID`)
     REFERENCES `projectdb`.`genre` (`GENRE_ID`),
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `projectdb`.`song` (
     FOREIGN KEY (`MOOD_ID`)
     REFERENCES `projectdb`.`mood` (`MOOD_ID`),
   CONSTRAINT `fk_song_topic1`
-    FOREIGN KEY (`topic_TOPIC_ID`)
+    FOREIGN KEY (`TOPIC_ID`)
     REFERENCES `projectdb`.`topic` (`TOPIC_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -193,15 +193,15 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `projectdb`.`playlist_topic` (
   `playlist_PLAYLIST_ID` VARCHAR(7) NOT NULL,
-  `topic_TOPIC_ID` VARCHAR(7) NOT NULL,
-  PRIMARY KEY (`playlist_PLAYLIST_ID`, `topic_TOPIC_ID`),
-  INDEX `fk_playlist_has_topic_topic1_idx` (`topic_TOPIC_ID` ASC) VISIBLE,
+  `TOPIC_ID` VARCHAR(7) NOT NULL,
+  PRIMARY KEY (`playlist_PLAYLIST_ID`, `TOPIC_ID`),
+  INDEX `fk_playlist_has_topic_topic1_idx` (`TOPIC_ID` ASC) VISIBLE,
   INDEX `fk_playlist_has_topic_playlist1_idx` (`playlist_PLAYLIST_ID` ASC) VISIBLE,
   CONSTRAINT `fk_playlist_has_topic_playlist1`
     FOREIGN KEY (`playlist_PLAYLIST_ID`)
     REFERENCES `projectdb`.`playlist` (`PLAYLIST_ID`),
   CONSTRAINT `fk_playlist_has_topic_topic1`
-    FOREIGN KEY (`topic_TOPIC_ID`)
+    FOREIGN KEY (`TOPIC_ID`)
     REFERENCES `projectdb`.`topic` (`TOPIC_ID`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -265,14 +265,14 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `projectdb`.`song_has_artist` (
   `song_SONG_ID` VARCHAR(15) NOT NULL,
   `song_ARTIST_ID` VARCHAR(4) NOT NULL,
-  `song_topic_TOPIC_ID` VARCHAR(3) NOT NULL,
+  `song_TOPIC_ID` VARCHAR(3) NOT NULL,
   `artist_ARTIST_ID` VARCHAR(4) NOT NULL,
-  PRIMARY KEY (`song_SONG_ID`, `song_ARTIST_ID`, `song_topic_TOPIC_ID`, `artist_ARTIST_ID`),
+  PRIMARY KEY (`song_SONG_ID`, `song_ARTIST_ID`, `song_TOPIC_ID`, `artist_ARTIST_ID`),
   INDEX `fk_song_has_artist_artist1_idx` (`artist_ARTIST_ID` ASC) VISIBLE,
-  INDEX `fk_song_has_artist_song1_idx` (`song_SONG_ID` ASC, `song_ARTIST_ID` ASC, `song_topic_TOPIC_ID` ASC) VISIBLE,
+  INDEX `fk_song_has_artist_song1_idx` (`song_SONG_ID` ASC, `song_ARTIST_ID` ASC, `song_TOPIC_ID` ASC) VISIBLE,
   CONSTRAINT `fk_song_has_artist_song1`
-    FOREIGN KEY (`song_SONG_ID` , `song_ARTIST_ID` , `song_topic_TOPIC_ID`)
-    REFERENCES `projectdb`.`song` (`SONG_ID` , `ARTIST_ID` , `topic_TOPIC_ID`)
+    FOREIGN KEY (`song_SONG_ID` , `song_ARTIST_ID` , `song_TOPIC_ID`)
+    REFERENCES `projectdb`.`song` (`SONG_ID` , `ARTIST_ID` , `TOPIC_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_song_has_artist_artist1`

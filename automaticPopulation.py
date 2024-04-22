@@ -33,9 +33,9 @@ def insert_genre(cursor, genre_id, genre_name):
     cursor.execute(sql, (genre_id, genre_name))
     genre_map[genre_name] = genre_id
 
-def insert_lyrics(cursor, lyrics_id, lyrics_text, word_count):
-    sql = "INSERT INTO lyrics (LYRICS_ID, LYRICS_TEXT, WORD_COUNT) VALUES (%s, %s, %s)"
-    cursor.execute(sql, (lyrics_id, lyrics_text, word_count))
+def insert_lyrics(cursor, lyrics_id, lyrics_text, word_count, song_id):
+    sql = "INSERT INTO lyrics (LYRICS_ID, LYRICS_TEXT, WORD_COUNT, SONG_ID) VALUES (%s, %s, %s, %s)"
+    cursor.execute(sql, (lyrics_id, lyrics_text, word_count, song_id))
 
 def insert_mood(cursor, mood_id, song_id, *values):
     sql = "INSERT INTO mood (MOOD_ID, SONG_ID, DATING_VAL, VIOLENCE_VAL, WORLDLIFE_VAL, NIGHTTIME_VAL, SHAKING_VAL, FAM_GOSPEL_VAL, ROMANTIC_VAL, COMMS_VAL, OBSCENE_VAL, MUSIC_VAL, MOVMTPLACES_VAL, VISUAL_VAL, FAM_SPIRIT_VAL, LIKE_GIRLS_VAL, SADNESS_VAL, FEELINGS_VAL, DANCE_VAL, LOUDNESS_VAL, ACOUSTIC_VAL, INSTRUMENT_VAL, VALANCE_VAL, ENERGY_VAL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -47,7 +47,7 @@ def insert_topic(cursor, topic_id, topic_name):
     topic_map[topic_name] = topic_id
 
 def insert_song(cursor, song_id, song_name, artist_id, release_date, genre_id, lyrics_id, mood_id, topic_id):
-    sql = "INSERT INTO song (SONG_ID, SONG_NAME, ARTIST_ID, RELEASE_DATE, GENRE_ID, LYRICS_ID, MOOD_ID, topic_TOPIC_ID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO song (SONG_ID, SONG_NAME, ARTIST_ID, RELEASE_DATE, GENRE_ID, LYRICS_ID, MOOD_ID, TOPIC_ID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     cursor.execute(sql, (song_id, song_name, artist_id, release_date, genre_id, lyrics_id, mood_id, topic_id))
 
 
@@ -63,24 +63,21 @@ def process_csv(filename):
 
                 artist_name = row[1]
                 genre_name = row[4]
-                topic_name = row[30]
+                topic_name = row[29]
 
                 artist_id = None
                 genre_id = None
                 topic_id = None
-                
                 if artist_name in artist_map:
                     artist_id = artist_map[artist_name]
                 else:
                     artist_id = generate_uuid("A", 7)
                     insert_artist(cursor, artist_id, artist_name)
-
                 if genre_name in genre_map:
                     genre_id = genre_map[genre_name]
                 else:
                     genre_id = generate_uuid("G", 7)
                     insert_genre(cursor, genre_id, genre_name)
-
                 if topic_name in topic_map:
                     topic_id = topic_map[topic_name]
                 else:
@@ -96,10 +93,10 @@ def process_csv(filename):
                 lyrics_text = row[5]
                 word_count = row[6]
                 mood_values = [float(value) for value in row[7:29]]
-                
-                insert_lyrics(cursor, lyrics_id, lyrics_text, word_count)
+
+                insert_lyrics(cursor, lyrics_id, lyrics_text, word_count, song_id)
                 mood_values = [float(value) for value in row[7:29]]
-                insert_mood(cursor, mood_id, song_id, *mood_values)                
+                insert_mood(cursor, mood_id, song_id, *mood_values)    
                 insert_song(cursor, song_id, song_name, artist_id, release_date, genre_id, lyrics_id, mood_id, topic_id)
                 print("Data inserted for song:", song_name)
 
